@@ -6,8 +6,6 @@ import dearpygui.dearpygui as dpg
 import numpy as np
 from pyparsing import itertools
 
-from GUI.utils import modal_message
-
 logger = logging.getLogger("Core.Kharon")
 
 course_average = np.random.randint(40, 60, 10)
@@ -26,6 +24,8 @@ class ReviewPanel:
             self.base_frequency = 1
             self.amplitude = 1
             self.ID = ID
+            self.student_score = np.random.randint(0, 20, 10).astype(float)
+
             with dpg.group(horizontal=True):
                 with dpg.group():
                     dpg.add_text(
@@ -37,7 +37,7 @@ class ReviewPanel:
                     dpg.add_plot_axis(dpg.mvXAxis, tag=f"{ID}xaxis")
                     dpg.set_axis_limits(dpg.last_item(), -10, 0)
                     dpg.add_plot_axis(dpg.mvYAxis, tag=f"{ID}yaxis")
-                    dpg.set_axis_limits(dpg.last_item(), -2, 1.5)
+                    dpg.set_axis_limits(dpg.last_item(), -1.5, 1.5)
                     dpg.add_line_series([], [], tag=f"{ID}line0", parent=f"{ID}yaxis")
                     dpg.add_line_series([], [], tag=f"{ID}line1", parent=f"{ID}yaxis")
                     dpg.add_line_series([], [], tag=f"{ID}line2", parent=f"{ID}yaxis")
@@ -50,7 +50,6 @@ class ReviewPanel:
             limits_group_series = [-0.5, 9.5]
             with dpg.plot(label="Performance", height=400, width=-1):
                 dpg.add_plot_legend()
-                student_score = np.random.randint(0, 20, 10)
                 ilabels = ["Average", "Quota", "Score"]
                 glabels = (
                     ("S1", 0),
@@ -86,7 +85,7 @@ class ReviewPanel:
                     dpg.set_axis_limits(dpg.last_item(), 0, 110)
                     dpg.add_bar_group_series(
                         values=list(
-                            itertools.chain(course_average, quota, student_score)
+                            itertools.chain(course_average, quota, self.student_score)
                         ),
                         label_ids=ilabels,
                         group_size=groups_c,
@@ -113,10 +112,19 @@ class ReviewPanel:
         start = time.time()
         record = 0
         associate = 0
+        subtraction_value = max(self.student_score) / 500
         while True:
             now = time.time()
-            if now - start > 0.015:
+            if now - start > 0.005:
                 if record < 500:
+                    self.student_score[self.student_score != 0] -= subtraction_value
+                    dpg.configure_item(
+                        f"{self.ID}_bar_group_series",
+                        values=list(
+                            itertools.chain(course_average, quota, self.student_score)
+                        ),
+                        group_size=3,
+                    )
                     self.base_frequency += 0.001
                     logger.warning(f"Purging Record: {record}")
                     record += 1
@@ -128,7 +136,6 @@ class ReviewPanel:
                     start = now
             if associate > 250:
                 break
-        modal_message(f"Done!")
 
     def close(self):
         dpg.delete_item(self.window)
