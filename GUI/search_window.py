@@ -1,14 +1,10 @@
-import collections
 import logging
-from pathlib import Path
 
 import dearpygui.dearpygui as dpg
 
-from Application import SearchMachine, db
-from Application.utils import SimpleTimer
+from Application import SearchMachine
 from GUI.review import ReviewPanel
 from GUI.tablez import TableManager9000
-from GUI.utils import modal_message
 
 logger = logging.getLogger("GUI.Bill")
 
