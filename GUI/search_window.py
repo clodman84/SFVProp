@@ -6,16 +6,16 @@ import dearpygui.dearpygui as dpg
 
 from Application import SearchMachine, db
 from Application.utils import SimpleTimer
+from GUI.review import ReviewPanel
 from GUI.tablez import TableManager9000
 from GUI.utils import modal_message
 
 logger = logging.getLogger("GUI.Bill")
 
 
-class BillingWindow:
-    def __init__(self, num_images: int):
+class SearchWindow:
+    def __init__(self):
         self.search_machine = SearchMachine()
-        self.current_index = 0
         self.num_rows = 45
 
         with dpg.window(
@@ -49,7 +49,7 @@ class BillingWindow:
             dpg.set_item_callback(input, self.suggest)
 
     def review_performance(self, user):
-        pass
+        ReviewPanel(user)
 
     def suggest(self, sender, app_data, user_data):
         if len(app_data) > 0:

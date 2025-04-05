@@ -118,10 +118,8 @@ class Logger(logging.Handler, metaclass=Singleton):
             theme = self.warning_theme
         elif level == 40:
             theme = self.error_theme
-            modal_message(message)
         elif level == 50:
             theme = self.critical_theme
-            modal_message(message)
 
         new_log = dpg.add_text(
             message, parent=self.filter_id, filter_key=message, wrap=0

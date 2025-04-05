@@ -69,8 +69,7 @@ def main():
                 )
             with dpg.menu(label="Dev"):
                 dpg.add_menu_item(
-                    label="Spawn Billing Window",
-                    callback=lambda: GUI.BillingWindow(num_images=40),
+                    label="Spawn Search Window", callback=lambda: GUI.SearchWindow()
                 )
                 dpg.add_menu_item(label="Show GUI Demo", callback=demo.show_demo)
 
