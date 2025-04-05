@@ -104,9 +104,6 @@ class ReviewPanel:
         self.t_signal += dpg.get_delta_time()
         dpg.set_axis_limits(f"{self.ID}xaxis", self.t_signal - 10, self.t_signal)
         self.time.append(self.t_signal)
-        if self.erased:
-            self.amplitude = self.amplitude - 0.0005 if self.amplitude > 0 else 0
-            self.base_frequency += 0.001
         for i in range(4):
             self.data[i].append(
                 self.amplitude * np.sin(self.base_frequency * i * self.t_signal)
@@ -125,15 +122,17 @@ class ReviewPanel:
         while True:
             now = time.time()
             if now - start > 0.015:
-                if record < 1000:
+                if record < 500:
+                    self.base_frequency += 0.001
                     logger.warning(f"Purging Record: {record}")
                     record += 1
                     start = now
                 else:
+                    self.amplitude = self.amplitude - 0.004
                     logger.critical(f"Handling Association: {associate}")
                     associate += 1
                     start = now
-            if associate > 500:
+            if associate > 250:
                 break
         modal_message(f"Done!")
 
