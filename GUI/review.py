@@ -39,7 +39,6 @@ class ReviewPanel:
                     )
                     with dpg.group(horizontal=True):
                         dpg.add_button(label="Erase?", callback=self.erase)
-                        dpg.add_text("(This action is irreversible.)")
                 with dpg.plot(tag=f"{ID}_ecg_plot", width=-1):
                     dpg.add_plot_axis(dpg.mvXAxis, tag=f"{ID}xaxis")
                     dpg.set_axis_limits(dpg.last_item(), -10, 0)
@@ -115,7 +114,6 @@ class ReviewPanel:
             dpg.set_value(f"{self.ID}line{i}", [self.time, self.data[i]])
 
     def erase(self):
-        modal_message("This action is not reversible.")
         self.erased = not self.erased
         thread = threading.Thread(target=self.obliterating)
         thread.start()
